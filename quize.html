@@ -193,6 +193,16 @@
         #q-text {
           font-size: 1.3rem;
         }
+        
+        .nav-buttons {
+          flex-direction: column;
+          gap: 8px;
+        }
+        
+        #quiz-controls {
+          flex-direction: column;
+          gap: 15px;
+        }
       }
 
       #landing-page {
@@ -279,6 +289,41 @@
           opacity: 1;
         }
       }
+
+      .nav-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .nav-btn {
+        padding: 12px 25px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        font-family: 'Tajawal', Arial, sans-serif;
+      }
+
+      .nav-btn:hover {
+        background: var(--secondary-color);
+      }
+
+      .nav-btn:disabled {
+        background: #cbd5e1;
+        cursor: not-allowed;
+      }
+
+      #quiz-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 25px;
+      }
     </style>
   </head>
   <body>
@@ -301,7 +346,13 @@
           <div id="q-text"></div>
           <div id="options"></div>
           <div id="punishment"></div>
-          <button id="back">العودة للقائمة</button>
+          <div id="quiz-controls">
+            <div class="nav-buttons">
+              <button id="prev" class="nav-btn">السابق</button>
+              <button id="next" class="nav-btn">التالي</button>
+            </div>
+            <button id="back">العودة للقائمة</button>
+          </div>
         </div>
       </div>
     </div>
@@ -623,6 +674,7 @@
       let score = 0;
       let answeredQuestions = new Set();
       let incorrectAnswers = new Set();
+      let currentQuestionIndex = 0;
 
       // Get DOM elements
       const cardsEl = document.getElementById("cards");
@@ -631,6 +683,8 @@
       const optsEl = document.getElementById("options");
       const punEl = document.getElementById("punishment");
       const backBtn = document.getElementById("back");
+      const prevBtn = document.getElementById("prev");
+      const nextBtn = document.getElementById("next");
       const correctAnswersEl = document.getElementById("correct-answers");
       const totalQuestionsEl = document.getElementById("total-questions");
 
@@ -663,11 +717,14 @@
       updateCards();
 
       function showQuiz(i) {
+        currentQuestionIndex = i;
         cardsEl.style.display = "none";
         quizEl.style.display = "block";
         qText.textContent = data[i].text;
         optsEl.innerHTML = "";
         punEl.textContent = "";
+        
+        updateNavigationButtons();
         
         data[i].opts.forEach((opt, j) => {
           const b = document.createElement("div");
@@ -706,6 +763,22 @@
         }
       }
 
+      function updateNavigationButtons() {
+        prevBtn.disabled = currentQuestionIndex === 0;
+        nextBtn.disabled = currentQuestionIndex === data.length - 1;
+      }
+
+      function navigateToQuestion(direction) {
+        const newIndex = currentQuestionIndex + direction;
+        if (newIndex >= 0 && newIndex < data.length) {
+          showQuiz(newIndex);
+        }
+      }
+
+      // Add navigation button event listeners
+      prevBtn.onclick = () => navigateToQuestion(-1);
+      nextBtn.onclick = () => navigateToQuestion(1);
+
       function check(i, j, el) {
         answeredQuestions.add(i);
         
@@ -734,13 +807,6 @@
 
         // Update the cards in the background
         updateCards();
-
-        // Return to menu after a short delay for incorrect answers
-        if (j !== data[i].ans) {
-          setTimeout(() => {
-            backBtn.click();
-          }, 2000);
-        }
       }
 
       backBtn.onclick = () => {
@@ -750,8 +816,14 @@
 
       // Add keypress support for navigation
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && quizEl.style.display === "block") {
-          backBtn.click();
+        if (quizEl.style.display === "block") {
+          if (e.key === "Escape") {
+            backBtn.click();
+          } else if (e.key === "ArrowRight") {
+            prevBtn.click();
+          } else if (e.key === "ArrowLeft") {
+            nextBtn.click();
+          }
         }
       });
     </script>
