@@ -256,6 +256,145 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       }
 
+      /* Main Options Styles */
+      .main-options {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 40px;
+      }
+
+      .main-option {
+        width: 300px;
+        padding: 20px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--card-shadow);
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .main-option:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .main-option h3 {
+        margin: 0;
+        color: var(--primary-color);
+        font-size: 1.5rem;
+      }
+
+      /* Emoji Quiz Styles */
+      .emoji-quiz {
+        display: none;
+        padding: 40px;
+        max-width: 800px;
+        margin: 40px auto;
+      }
+
+      .emoji-question {
+        background: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 5px solid var(--primary-color);
+        border-radius: 8px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .emoji-display {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .emoji-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #f8fafc;
+        border-radius: 10px;
+        border: 1.5px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        padding: 18px 12px 10px 12px;
+        margin-bottom: 10px;
+        margin-top: 8px;
+        transition: all 0.3s cubic-bezier(.4,2,.6,1);
+      }
+
+      .emoji-option {
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        background: #f8f9fa;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: right;
+      }
+
+      .emoji-option:hover {
+        background: #e9ecef;
+        transform: translateX(-5px);
+      }
+
+      .emoji-option.correct {
+        background: #d4edda;
+        border-color: #28a745;
+      }
+
+      .emoji-option.incorrect {
+        background: #f8d7da;
+        border-color: #dc3545;
+      }
+
+      .emoji-result {
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      /* Analytical Scenario Styles */
+      .analytical-scenario {
+        display: none;
+        padding: 40px;
+        max-width: 800px;
+        margin: 40px auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .scenario-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 30px;
+        text-align: justify;
+      }
+
+      .back-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 25px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      .back-button:hover {
+        background: var(--secondary-color);
+      }
+
       #quiz-section {
         display: none;
       }
@@ -435,17 +574,213 @@
         background: #cbd5e1;
         cursor: not-allowed;
       }
+
+      /* Wheel of Fortune Styles */
+      .wheel-container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px;
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("ain.jpg") center/cover no-repeat fixed;
+        min-height: 100vh;
+      }
+
+      .wheel {
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        position: relative;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        border: 10px solid #fff;
+        background: conic-gradient(
+          #ef4444 0 120deg,      /* Red: Quizzes */
+          #2563eb 120deg 240deg, /* Blue: Predict Crime with Emojis */
+          #22c55e 240deg 360deg  /* Green: Solve the Crime */
+        );
+        transition: transform 3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        transform: rotate(0deg);
+        overflow: visible;
+      }
+
+      .wheel-label {
+        position: absolute;
+        width: 90px;
+        left: 50%;
+        top: 50%;
+        transform-origin: 0 0;
+        color: #fff;
+        font-size: 1.05rem;
+        font-weight: bold;
+        text-shadow: 1px 1px 6px rgba(0,0,0,0.25);
+        text-align: center;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 80px;
+        line-height: 1.3;
+        padding: 0 2px;
+      }
+
+      .wheel-label.quizzes {
+        transform: rotate(-60deg) translate(60px, -25px) rotate(60deg); /* Red section */
+      }
+      .wheel-label.emojis {
+        transform: rotate(180deg) translate(60px, -25px) rotate(-180deg); /* Blue section */
+      }
+      .wheel-label.solve {
+        transform: rotate(240deg) translate(120px, -25px) rotate(-240deg); /* Green section, moved even further left */
+      }
+
+      .wheel-pointer {
+        width: 0; height: 0;
+        border-left: 18px solid transparent;
+        border-right: 18px solid transparent;
+        border-bottom: 32px solid #fff;
+        position: absolute;
+        top: -38px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
+      }
+
+      .spin-button {
+        margin-top: 30px;
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Tajawal', Arial, sans-serif;
+        font-weight: 500;
+      }
+
+      .spin-button:hover {
+        background: var(--secondary-color);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .spin-button:disabled {
+        background: #cbd5e1;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px 40px;
+        border-radius: 10px;
+        font-size: 1.2rem;
+        display: none;
+        z-index: 1000;
+      }
+
+      .ent-show-btn {
+        display: inline-block;
+        padding: 10px 28px;
+        background: var(--primary-color);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-family: 'Tajawal', Arial, sans-serif;
+        font-weight: 500;
+        margin-bottom: 8px;
+        margin-top: 0;
+        box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+        transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      }
+      .ent-show-btn:hover {
+        background: var(--secondary-color);
+        box-shadow: 0 4px 16px rgba(30,64,175,0.12);
+        transform: translateY(-2px) scale(1.03);
+      }
+
+      .ent-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #f8fafc;
+        border-radius: 10px;
+        border: 1.5px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        padding: 18px 12px 10px 12px;
+        margin-bottom: 10px;
+        margin-top: 8px;
+        transition: all 0.3s cubic-bezier(.4,2,.6,1);
+      }
+
+      .ent-option {
+        display: block;
+        width: 100%;
+        padding: 15px 20px;
+        margin: 0;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 1.1rem;
+        font-family: 'Tajawal', Arial, sans-serif;
+        font-weight: 500;
+        text-align: right;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      }
+      .ent-option:hover:enabled {
+        border-color: var(--primary-color);
+        background: #f0f9ff;
+        color: var(--primary-color);
+        transform: translateX(-3px);
+      }
+      .ent-option:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+      .ent-option.correct {
+        background: #f0fdf4 !important;
+        border-color: var(--success-color) !important;
+        color: #166534;
+      }
+      .ent-option.wrong {
+        background: #fef2f2 !important;
+        border-color: var(--error-color) !important;
+        color: #991b1b;
+      }
     </style>
   </head>
   <body>
     <div id="landing-page">
       <h1 class="main-title">جمعية عين</h1>
       <h2 class="sub-title">بوث القانون</h2>
-      <button class="start-btn" onclick="startQuiz()">ابدأ الاختبار</button>
+      <button class="start-btn" onclick="showMainOptions()">ابدأ الاختبار</button>
     </div>
 
-    <div id="quiz-section">
+    <div class="main-options">
+      <div class="main-option" onclick="showShortQuestions()">
+        <h3>أسئلة قصيرة</h3>
+      </div>
+      <div class="main-option" onclick="showEmojiQuiz()">
+        <h3>توقع الجريمة من خلال الايموجي</h3>
+      </div>
+      <div class="main-option" onclick="showAnalyticalScenario()">
+        <h3>تحليل الجريمة</h3>
+      </div>
+    </div>
+
+    <div id="quiz-section" style="display: none;">
       <header>
+        <button class="back-to-main" onclick="returnToMainOptions()" style="position: absolute; top: 20px; right: 20px;">العودة للخيارات</button>
         <h1>اختبار التكييف القانوني</h1>
       </header>
       <div class="container">
@@ -481,6 +816,41 @@
         </div>
       </div>
     </div>
+
+    <div class="emoji-quiz">
+      <button class="back-button" onclick="returnToMainOptions()">العودة للخيارات</button>
+      <h2>توقع الجريمة من خلال الايموجي</h2>
+      <div id="emoji-questions"></div>
+    </div>
+
+    <div class="analytical-scenario">
+      <button class="back-button" onclick="returnToMainOptions()">العودة للخيارات</button>
+      <h2>تحليل الجريمة</h2>
+      <div class="scenario-text">
+        في أحد الأحياء القديمة كان هناك رجل يدعى رامي يملك ورشة لتصليح الساعات وكان لديه موظف اسمه أدهم وفي يوم من الأيام حضر شخص يدعى فراس وطلب من أدهم أن يصلح له ساعة وأخبره بأنه مستعجل عليها كثيرًا وأنها ثمينة أخذ أدهم الساعة وعند فتحها اكتشف وجود كيس صغير بداخله مسحوق أبيض اشتبه بأنه مخدرات لكنه لم يخبر رامي صاحب الورشة وبعد الانتهاء من التصليح قرر الاحتفاظ بالكيس لنفسه دون إعلام فراس فأخذ الكيس وأخفاه في منزله بعد يومين عاد فراس إلى الورشة ووجد رامي هناك وطلب منه الساعة فأبلغه رامي بأنها غير موجودة وأن عليه العودة في اليوم التالي غضب فراس وبدأ يسب وسمع أدهم ذلك فواجهه وقال له إن الساعة قد سُرقت لكن فراس شك بوجود أمر مريب فقام بإبلاغ الشرطة فتولت الشرطة فتح تحقيق ومع البحث عُثر على الكيس المخفي في منزل أدهم وفُحص فتبين أنه يحتوي على هيروين وكانت بصمات أدهم وفراس عليهما معًا بعد اكتشاف الكيس المخفي واحتوائه على الهيروين وضبط بصمات أدهم وفراس عليه بدأت الشرطة بالتحقيق مع الطرفين أدهم أنكر علمه بمحتوى الكيس وقال إنه وجد الكيس داخل الساعة ولم يخبر رامي لأنه خاف من المشاكل أما فراس فأكد أن الساعة لم تُسرق وأنه لم يكن يعلم بوجود مخدرات بداخلها وأن بصماته على الكيس تعود لمرة سابقة عندما كان يعبث بالساعة في التحقيقات تبين أيضًا أن رامي لم يكن على علم بوجود المخدرات داخل الورشة ولم يشارك في أي فعل متعلق بها
+      </div>
+      <div class="question">ما مسؤولية كل من أدهم وفراس ورامي مع التكييف القانوني؟</div>
+      <div class="options">
+        <div class="option" onclick="checkAnalyticalAnswer(0)">أ. أدهم مسؤول عن حيازة مخدرات بقصد الاتجار وفراس شريك في الحيازة ورامي غير مسؤول</div>
+        <div class="option" onclick="checkAnalyticalAnswer(1)">ب. أدهم مسؤول عن الحيازة فقط وفراس غير مسؤول ورامي مسؤول عن الإهمال في مراقبة موظفه</div>
+        <div class="option" onclick="checkAnalyticalAnswer(2)">ج. أدهم مسؤول عن حيازة مخدرات مع نية الإخفاء وفراس متهم بمساعدة غير مقصودة ورامي غير مسؤول</div>
+        <div class="option" onclick="checkAnalyticalAnswer(3)">د. أدهم وفراس متهمان بالاشتراك في جريمة حيازة المخدرات ورامي مسؤول عن جريمة التستر</div>
+      </div>
+    </div>
+
+    <div class="wheel-container">
+      <h1 style="color: white; margin-bottom: 30px;">Wheel of Fortune</h1>
+      <div style="position: relative; width: 340px; height: 370px;">
+        <div class="wheel-pointer"></div>
+        <div class="wheel">
+          <div class="wheel-label quizzes">Quizzes</div>
+          <div class="wheel-label emojis">Predict Crime<br>with Emojis</div>
+          <div class="wheel-label solve">Solve the Crime</div>
+        </div>
+      </div>
+      <button class="spin-button" onclick="spinWheel()">Spin the Wheel</button>
+    </div>
+    <div class="loading">Loading...</div>
 
     <script>
       function startQuiz() {
@@ -1069,6 +1439,391 @@
           }
         }
       });
+
+      function showMainOptions() {
+        document.getElementById('landing-page').style.display = 'none';
+        document.querySelector('.main-options').style.display = 'flex';
+      }
+
+      function showShortQuestions() {
+        document.querySelector('.main-options').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        updateCards(); // Make sure to update the cards when showing the quiz section
+      }
+
+      function showEmojiQuiz() {
+        document.querySelector('.main-options').style.display = 'none';
+        document.querySelector('.emoji-quiz').style.display = 'block';
+        initializeEmojiQuiz();
+      }
+
+      function showAnalyticalScenario() {
+        document.querySelector('.main-options').style.display = 'none';
+        document.querySelector('.analytical-scenario').style.display = 'block';
+      }
+
+      function returnToMainOptions() {
+        document.querySelector('.emoji-quiz').style.display = 'none';
+        document.querySelector('.analytical-scenario').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('question-page').style.display = 'none';
+        document.querySelector('.main-options').style.display = 'flex';
+      }
+
+      const emojiQuestions = [
+        {
+          emoji: "🧯🔥🚗",
+          options: ["سرقة", "حريق عمد", "دهس"],
+          answer: 1,
+          explanation: "حريق عمد"
+        },
+        {
+          emoji: "💻🔓🕵️‍♂️",
+          options: ["احتيال بنكي", "دخول غير مشروع", "تجسس"],
+          answer: 1,
+          explanation: "دخول غير مشروع"
+        },
+        {
+          emoji: "📷🙅‍♀️📲",
+          options: ["قذف وتشهير", "تصوير غير مشروع", "تنمّر إلكتروني"],
+          answer: 1,
+          explanation: "تصوير غير مشروع (تعدّي على الخصوصية)"
+        },
+        {
+          emoji: "👶👩‍🍼🏃‍♀️",
+          options: ["خطف قاصر", "حرمان من الحضانة", "تبني غير قانوني"],
+          answer: 0,
+          explanation: "خطف قاصر"
+        },
+        {
+          emoji: "📦🚚😡",
+          options: ["غش تجاري", "خيانة أمانة", "سرقة موصوفة"],
+          answer: 1,
+          explanation: "خيانة أمانة (استلام وتسليم ثم إنكار)"
+        },
+        {
+          emoji: "🧱🏡📏",
+          options: ["تعدّي على ملكية", "مخالفة بناء", "تخريب ممتلكات"],
+          answer: 0,
+          explanation: "تعدّي على ملكية (بناء جدار على أرض الجار)"
+        },
+        {
+          emoji: "📞😱💬",
+          options: ["تهديد عبر الهاتف", "سب وشتم", "ابتزاز مالي"],
+          answer: 0,
+          explanation: "تهديد عبر الهاتف"
+        },
+        {
+          emoji: "📱🛍️💳",
+          options: ["احتيال إلكتروني", "تجارة إلكترونية مشبوهة", "تسويق كاذب"],
+          answer: 0,
+          explanation: "احتيال إلكتروني (استدراج بيانات الدفع)"
+        }
+      ];
+
+      emojiQuestions.push(
+        { emoji: "🚗💥🚶‍♂", options: ["حريق", "دهس", "سرقة سيارة"], answer: 1, explanation: "دهس" },
+        { emoji: "🔪💔🩸", options: ["إيذاء نفسي", "جريمة قتل", "محاولة انتحار"], answer: 1, explanation: "جريمة قتل" },
+        { emoji: "🔥🏠😱", options: ["إهمال منزلي", "حريق عمد", "كهرباء"], answer: 1, explanation: "حريق عمد" },
+        { emoji: "🧒👊🩹", options: ["إهمال منزلي", "خطف أطفال", "عنف ضد الأطفال"], answer: 2, explanation: "عنف ضد الأطفال" },
+        { emoji: "💼💸🏛", options: ["اختلاس", "رشوة", "غسيل أموال"], answer: 1, explanation: "رشوة" },
+        { emoji: "🧓🏠🚪", options: ["إهمال أطفال", "إهمال كبار السن", "سرقة منزلية"], answer: 1, explanation: "إهمال كبار السن" },
+        { emoji: "🔫🏦🏃‍♂🚓", options: ["سرقة بسيطة", "سطو على بنك", "اقتحام مبنى حكومي"], answer: 1, explanation: "سطو على بنك" },
+        { emoji: "🧑‍💻👀🔐💻", options: ["برمجة تطبيق", "اختراق جهاز", "تحميل ملفات"], answer: 1, explanation: "اختراق جهاز" },
+        { emoji: "📸👩🚫🌐", options: ["نشر إعلان", "نشر صور شخصية", "استخدام فلاتر"], answer: 1, explanation: "نشر صور شخصية" },
+        { emoji: "🧍‍♀🛍💸❌", options: ["شراء قانوني", "بيع بضائع مسروقة", "خصم مزيف"], answer: 1, explanation: "بيع بضائع مسروقة" },
+        { emoji: "👊🧍‍♂🤕🏥", options: ["خلاف شفهي", "الاعتداء الجسدي", "تهديد لفظي"], answer: 1, explanation: "الاعتداء الجسدي" },
+        { emoji: "🚗👮‍♂🔎❌📃", options: ["إجراء روتيني", "تفتيش بدون إذن", "تنظيم المرور"], answer: 1, explanation: "تفتيش بدون إذن" },
+        { emoji: "📝🧑‍🏫🧍‍♂🔄", options: ["غش جماعي", "انتحال شخصية بالامتحان", "تأجيل الامتحان"], answer: 1, explanation: "انتحال شخصية بالامتحان" },
+        { emoji: "👩‍⚖💍📄✂", options: ["عقد زواج", "الطلاق", "تبني طفل"], answer: 1, explanation: "الطلاق" },
+        { emoji: "📞📲👮‍♂❌", options: ["بلاغ حقيقي", "تبليغ كاذب", "شكوى غير واضحة"], answer: 1, explanation: "تبليغ كاذب" },
+        { emoji: "🏠🔐🧍‍♂🚫", options: ["زيارة صديق", "تعدي على السكن", "فتح الباب بالخطأ"], answer: 1, explanation: "تعدي على السكن" },
+        { emoji: "🧑‍⚖📑✍🧍‍♂👀", options: ["توقيع عادي", "توقيع دون قراءة", "موافقة شفوية"], answer: 1, explanation: "توقيع دون قراءة" },
+        { emoji: "💻💳🧑‍💻🛒", options: ["تسوق طبيعي", "احتيال إلكتروني", "اشتراك مجاني"], answer: 1, explanation: "احتيال إلكتروني" },
+        { emoji: "🚬🚫👦", options: ["بيع مرخص", "بيع تبغ لقاصر", "ترويج نيكوتين للبالغين"], answer: 1, explanation: "بيع تبغ لقاصر" },
+        { emoji: "📞🤬🧍‍♀😢", options: ["مكالمة خدمة", "إساءة عبر الهاتف", "مزحة بين أصدقاء"], answer: 1, explanation: "إساءة عبر الهاتف" },
+        { emoji: "👷‍♂🏗⚠❌", options: ["إجراءات اعتيادية", "إهمال السلامة", "اختبار معدات"], answer: 1, explanation: "إهمال السلامة" },
+        { emoji: "👨‍👧‍👦❌💵📆", options: ["دفع جزئي", "تأجيل مؤقت", "عدم دفع النفقة"], answer: 2, explanation: "عدم دفع النفقة" },
+        { emoji: "🚫📢👥🪧", options: ["تجمع عائلي", "مظاهرة بدون ترخيص", "مهرجان فني"], answer: 1, explanation: "مظاهرة بدون ترخيص" },
+        { emoji: "🧾✒🔄❌", options: ["تصحيح إملائي", "تزوير مستند رسمي", "توقيع مكرر"], answer: 1, explanation: "تزوير مستند رسمي" },
+        { emoji: "🧑‍⚖⚰📜🏠", options: ["عقد إيجار", "وصية أو تركة", "طلب رهن"], answer: 1, explanation: "وصية أو تركة" }
+      );
+
+      function initializeEmojiQuiz() {
+        const quizContainer = document.getElementById('emoji-questions');
+        quizContainer.innerHTML = '';
+
+        emojiQuestions.forEach((q, index) => {
+          const questionDiv = document.createElement('div');
+          questionDiv.className = 'emoji-question';
+
+          const emojiDiv = document.createElement('div');
+          emojiDiv.className = 'emoji-display';
+          emojiDiv.textContent = q.emoji;
+
+          // Toggle button and options container
+          const toggleBtn = document.createElement('button');
+          toggleBtn.className = 'ent-show-btn';
+          toggleBtn.textContent = 'إظهار الخيارات';
+          toggleBtn.style.marginBottom = '10px';
+
+          const optionsDiv = document.createElement('div');
+          optionsDiv.className = 'emoji-options';
+          optionsDiv.style.display = 'none';
+
+          const resultDiv = document.createElement('div');
+          resultDiv.className = 'emoji-result';
+
+          q.options.forEach((option, i) => {
+            const button = document.createElement('button');
+            button.className = 'emoji-option';
+            button.textContent = option;
+            button.onclick = () => {
+              const options = optionsDiv.querySelectorAll('button');
+              options.forEach(opt => {
+                opt.disabled = true;
+                opt.classList.remove('correct', 'incorrect');
+              });
+
+              if (i === q.answer) {
+                button.classList.add('correct');
+                resultDiv.innerHTML = '✅ إجابة صحيحة!';
+              } else {
+                button.classList.add('incorrect');
+                resultDiv.innerHTML = `❌ إجابة خاطئة<br>✅ الجواب الصحيح: ${String.fromCharCode(97 + q.answer)}. ${q.explanation}`;
+              }
+            };
+            optionsDiv.appendChild(button);
+          });
+
+          toggleBtn.onclick = function() {
+            if (optionsDiv.style.display === 'none') {
+              optionsDiv.style.display = 'flex';
+              toggleBtn.textContent = 'إخفاء الخيارات';
+            } else {
+              optionsDiv.style.display = 'none';
+              toggleBtn.textContent = 'إظهار الخيارات';
+              // Also clear result and re-enable options for retry
+              resultDiv.innerHTML = '';
+              optionsDiv.querySelectorAll('button').forEach(opt => {
+                opt.disabled = false;
+                opt.classList.remove('correct', 'incorrect');
+              });
+            }
+          };
+
+          questionDiv.appendChild(emojiDiv);
+          questionDiv.appendChild(toggleBtn);
+          questionDiv.appendChild(optionsDiv);
+          questionDiv.appendChild(resultDiv);
+          quizContainer.appendChild(questionDiv);
+        });
+      }
+
+      function checkAnalyticalAnswer(selectedIndex) {
+        const options = document.querySelectorAll('.analytical-scenario .option');
+        options.forEach(option => option.onclick = null);
+        
+        if (selectedIndex === 2) { // Correct answer is C
+          options[selectedIndex].classList.add('correct');
+        } else {
+          options[selectedIndex].classList.add('wrong');
+          options[2].classList.add('correct');
+        }
+      }
+
+      function showWheel() {
+        document.querySelector('.main-options').style.display = 'none';
+        document.querySelector('.wheel-container').style.display = 'flex';
+      }
+
+      function spinWheel() {
+        const wheel = document.querySelector('.wheel');
+        const spinButton = document.querySelector('.spin-button');
+        const loading = document.querySelector('.loading');
+        
+        // Disable spin button
+        spinButton.disabled = true;
+        
+        // Random number of full rotations (3-5) plus random angle
+        const rotations = 3 + Math.floor(Math.random() * 3);
+        const extraDegrees = Math.floor(Math.random() * 360);
+        const totalDegrees = rotations * 360 + extraDegrees;
+        
+        // Apply rotation
+        wheel.style.transform = `rotate(${totalDegrees}deg)`;
+        
+        // Calculate final position
+        const finalPosition = totalDegrees % 360;
+        let selectedOption;
+        
+        // Determine which option was selected
+        if (finalPosition >= 0 && finalPosition < 120) {
+          selectedOption = 0; // Quizzes
+        } else if (finalPosition >= 120 && finalPosition < 240) {
+          selectedOption = 1; // Predict Crime with Emojis
+        } else {
+          selectedOption = 2; // Solve the Crime
+        }
+        
+        // Show loading after wheel stops
+        setTimeout(() => {
+          loading.style.display = 'block';
+          
+          // Navigate to selected option after 3 seconds
+          setTimeout(() => {
+            loading.style.display = 'none';
+            document.querySelector('.wheel-container').style.display = 'none';
+            
+            switch(selectedOption) {
+              case 0:
+                showShortQuestions();
+                break;
+              case 1:
+                showEmojiQuiz();
+                break;
+              case 2:
+                showAnalyticalScenario();
+                break;
+            }
+            
+            // Reset wheel position and enable spin button
+            setTimeout(() => {
+              wheel.style.transition = 'none';
+              wheel.style.transform = 'rotate(0deg)';
+              setTimeout(() => {
+                wheel.style.transition = 'transform 3s cubic-bezier(0.17, 0.67, 0.83, 0.67)';
+                spinButton.disabled = false;
+              }, 50);
+            }, 1000);
+          }, 3000);
+        }, 3000);
+      }
+
+      // Add button to main options to show wheel
+      document.querySelector('.main-options').innerHTML += `
+        <button class="start-btn" onclick="showWheel()" style="margin-top: 20px;">Try Wheel of Fortune</button>
+      `;
+
+      // Add after the Try Wheel of Fortune button in .main-options
+      document.querySelector('.main-options').innerHTML += `
+        <button class="start-btn" onclick="showEntertainment()" style="margin-top: 20px; background: #f59e42; color: #fff;">ترفيه</button>
+      `;
+
+      // Add the ترفيه section HTML at the end of <body>
+      document.body.insertAdjacentHTML('beforeend', `
+        <div class="entertainment-section" style="display:none; padding:40px; max-width:600px; margin:40px auto; background:white; border-radius:15px; box-shadow:0 4px 16px rgba(0,0,0,0.08);">
+          <button class="back-button" onclick="returnToMainOptions()">العودة للخيارات</button>
+          <h2 style="text-align:center; color:#f59e42; margin-bottom:30px;">ترفيه</h2>
+          <div class="ent-q-mc">
+            <div class="ent-q-text">المتهم __________ حتى تثبت إدانته.</div>
+            <button class="ent-show-btn" onclick="toggleEntOptions(this)">إظهار الخيارات</button>
+            <div class="ent-options" style="display:none;">
+              <button class="ent-option" onclick="checkEntAnswer(this, 0, 1)">أ. مذنب</button>
+              <button class="ent-option" onclick="checkEntAnswer(this, 1, 1)">ب. بريء</button>
+              <button class="ent-option" onclick="checkEntAnswer(this, 2, 1)">ج. موقوف</button>
+            </div>
+            <div class="ent-result"></div>
+          </div>
+          <div class="ent-q-mc">
+            <div class="ent-q-text">يُمنع تصوير الأشخاص دون __________ منهم.</div>
+            <button class="ent-show-btn" onclick="toggleEntOptions(this)">إظهار الخيارات</button>
+            <div class="ent-options" style="display:none;">
+              <button class="ent-option" onclick="checkEntAnswer(this, 0, 2)">أ. مراقبة</button>
+              <button class="ent-option" onclick="checkEntAnswer(this, 1, 2)">ب. أمر</button>
+              <button class="ent-option" onclick="checkEntAnswer(this, 2, 2)">ج. موافقة</button>
+            </div>
+            <div class="ent-result"></div>
+          </div>
+          <div class="ent-q-mc">
+            <div class="ent-q-text">كل من يُقدم بلاغًا كاذبًا يُعاقب بـ __________.</div>
+            <button class="ent-show-btn" onclick="toggleEntOptions(this)">إظهار الخيارات</button>
+            <div class="ent-options" style="display:none;">
+              <button class="ent-option" onclick="checkEntAnswer(this, 0, 1)">أ. تنبيه شفهي</button>
+              <button class="ent-option" onclick="checkEntAnswer(this, 1, 1)">ب. السجن والغرامة</button>
+              <button class="ent-option" onclick="checkEntAnswer(this, 2, 1)">ج. رسالة اعتذار</button>
+            </div>
+            <div class="ent-result"></div>
+          </div>
+          <div class="ent-q-mc">
+            <div class="ent-q-text">العقود تُلزم المتعاقدين بمجرد __________.</div>
+            <button class="ent-show-btn" onclick="toggleEntOptions(this)">إظهار الخيارات</button>
+            <div class="ent-options" style="display:none;">
+              <button class="ent-option" onclick="checkEntAnswer(this, 0, 1)">أ. الكلام</button>
+              <button class="ent-option" onclick="checkEntAnswer(this, 1, 1)">ب. التوقيع</button>
+              <button class="ent-option" onclick="checkEntAnswer(this, 2, 1)">ج. المصافحة</button>
+            </div>
+            <div class="ent-result"></div>
+          </div>
+          <div class="ent-q-mc">
+            <div class="ent-q-text">لا يجوز تفتيش المنزل إلا بوجود __________.</div>
+            <button class="ent-show-btn" onclick="toggleEntOptions(this)">إظهار الخيارات</button>
+            <div class="ent-options" style="display:none;">
+              <button class="ent-option" onclick="checkEntAnswer(this, 0, 1)">أ. بطاقة تعريف</button>
+              <button class="ent-option" onclick="checkEntAnswer(this, 1, 1)">ب. إذن قضائي</button>
+              <button class="ent-option" onclick="checkEntAnswer(this, 2, 1)">ج. بلاغ شفهي</button>
+            </div>
+            <div class="ent-result"></div>
+          </div>
+        </div>
+      `);
+
+      // Add the toggleEntOptions function
+      function toggleEntOptions(btn) {
+        const optionsDiv = btn.nextElementSibling;
+        if (optionsDiv.style.display === 'none') {
+          optionsDiv.style.display = 'flex';
+          btn.textContent = 'إخفاء الخيارات';
+        } else {
+          optionsDiv.style.display = 'none';
+          btn.textContent = 'إظهار الخيارات';
+          // Also clear result and re-enable options for retry
+          const result = optionsDiv.parentElement.querySelector('.ent-result');
+          result.innerHTML = '';
+          optionsDiv.querySelectorAll('button').forEach(opt => {
+            opt.disabled = false;
+            opt.style.opacity = '';
+            opt.style.background = '';
+            opt.style.color = '';
+            if (opt.innerHTML.includes('✅')) opt.innerHTML = opt.innerHTML.replace(' ✅','');
+          });
+        }
+      }
+
+      // Add the checkEntAnswer function
+      function checkEntAnswer(btn, selected, correct) {
+        const options = btn.parentElement.querySelectorAll('.ent-option');
+        options.forEach((b, i) => {
+          b.disabled = true;
+          b.classList.remove('correct', 'wrong');
+          if (i === correct) {
+            b.classList.add('correct');
+            if (!b.innerHTML.includes('✅')) b.innerHTML += ' ✅';
+          } else if (i === selected) {
+            b.classList.add('wrong');
+          }
+        });
+        const result = btn.parentElement.parentElement.querySelector('.ent-result');
+        if (selected === correct) {
+          result.innerHTML = '<span style="color:#22c55e;font-weight:bold;">إجابة صحيحة!</span>';
+        } else {
+          result.innerHTML = '<span style="color:#ef4444;font-weight:bold;">إجابة خاطئة</span>';
+        }
+      }
+
+      // Add showEntertainment function
+      function showEntertainment() {
+        document.querySelector('.main-options').style.display = 'none';
+        document.querySelector('.entertainment-section').style.display = 'block';
+      }
+
+      // Update returnToMainOptions to hide entertainment section
+      const oldReturnToMainOptions = returnToMainOptions;
+      returnToMainOptions = function() {
+        if (document.querySelector('.entertainment-section'))
+          document.querySelector('.entertainment-section').style.display = 'none';
+        oldReturnToMainOptions();
+      }
     </script>
   </body>
 </html>
