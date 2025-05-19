@@ -109,6 +109,7 @@
         cursor: pointer;
         transition: all 0.2s ease;
         font-size: 1.1rem;
+        line-height: 1.6;
       }
 
       .option:hover {
@@ -324,6 +325,116 @@
         align-items: center;
         margin-top: 25px;
       }
+
+      .section-header {
+        text-align: center;
+        margin: 30px 0;
+        padding: 15px;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 10px;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .scenario {
+        background: #f8fafc;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-right: 4px solid var(--primary-color);
+        font-weight: 500;
+      }
+
+      .question {
+        margin-bottom: 15px;
+        font-weight: 500;
+      }
+
+      .option-label {
+        font-weight: 700;
+        margin-right: 12px;
+        color: var(--primary-color);
+        display: inline-block;
+        min-width: 25px;
+      }
+
+      .back-to-main {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 25px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: background 0.2s ease;
+        font-family: 'Tajawal', Arial, sans-serif;
+        z-index: 1000;
+      }
+
+      .back-to-main:hover {
+        background: var(--secondary-color);
+      }
+
+      .question-page {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--background-color);
+        z-index: 999;
+        overflow-y: auto;
+      }
+
+      .question-container {
+        max-width: 800px;
+        margin: 80px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--card-shadow);
+        position: relative;
+      }
+
+      .question-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .question-nav button {
+        padding: 12px 25px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        font-family: 'Tajawal', Arial, sans-serif;
+      }
+
+      .question-nav button:hover {
+        background: var(--secondary-color);
+      }
+
+      .question-nav button:disabled {
+        background: #cbd5e1;
+        cursor: not-allowed;
+      }
     </style>
   </head>
   <body>
@@ -341,18 +452,32 @@
         <div id="score-container">
           <div id="score">النتيجة: <span id="correct-answers">0</span> من <span id="total-questions">0</span></div>
         </div>
-        <div id="cards" class="grid"></div>
-        <div id="quiz">
-          <div id="q-text"></div>
-          <div id="options"></div>
-          <div id="punishment"></div>
-          <div id="quiz-controls">
-            <div class="nav-buttons">
-              <button id="prev" class="nav-btn">السابق</button>
-              <button id="next" class="nav-btn">التالي</button>
-            </div>
-            <button id="back">العودة للقائمة</button>
-          </div>
+        <div class="section">
+          <div class="section-header">القسم الجنائي</div>
+          <div id="cards-criminal" class="grid"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">القسم المدني</div>
+          <div id="cards-civil" class="grid"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">القسم الإلكتروني</div>
+          <div id="cards-electronic" class="grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="question-page" class="question-page">
+      <button class="back-to-main" onclick="returnToMain()">العودة للصفحة الرئيسية</button>
+      <div class="question-container">
+        <div id="q-text"></div>
+        <div id="options"></div>
+        <div id="punishment"></div>
+        <div class="question-nav">
+          <button id="prev-question" onclick="navigateQuestion(-1)">السؤال السابق</button>
+          <button id="next-question" onclick="navigateQuestion(1)">السؤال التالي</button>
         </div>
       </div>
     </div>
@@ -363,321 +488,254 @@
         document.getElementById('quiz-section').style.display = 'block';
       }
 
-      const data = [
-        {
-          text: "(1) اقتحم بيت وسكن فيه!",
-          opts: ["انتهاك حرمة ملك الغير", "تسلّل غير مشروع", "غصب عقار"],
-          ans: 2,
-          pun: "الحبس حتى سنتين أو الغرامة أو كلتيهما (المادة 279 عقوبات)",
-        },
-        {
-          text: "(2) سرق جوال من محل!",
-          opts: ["سرقة بسيطة", "سرقة موصوفة", "خيانة أمانة"],
-          ans: 0,
-          pun: "الحبس من 3 أشهر إلى 3 سنوات (المادة 404 عقوبات)",
-        },
-        {
-          text: "(3) تهديد على فيسبوك!",
-          opts: ["تهديد شفوي", "تهديد بواسطة وسيلة إلكترونية", "قذف وتشهير"],
-          ans: 1,
-          pun: "الحبس حتى سنة أو الغرامة (المادة 75 من قانون الجرائم الإلكترونية)",
-        },
-        {
-          text: "(4) امرأة خطفت طفلًا!",
-          opts: ["خطف قاصر", "اختطاف بهدف التبني", "حرمان من الحضانة"],
-          ans: 0,
-          pun: "الحبس من 5 إلى 15 سنة (المادة 290 عقوبات)",
-        },
-        {
-          text: "(5) ضرب مسنّ بعصا!",
-          opts: ["إيذاء بسيط", "إيذاء بآلة مؤذية", "شروع بالقتل"],
-          ans: 1,
-          pun: "الحبس من 6 أشهر إلى 3 سنوات (المادة 333 عقوبات)",
-        },
-        {
-          text: "(6) إحراق سيارة الجار!",
-          opts: ["تخريب ممتلكات", "حريق عمد", "تهديد وابتزاز"],
+      const data = {
+        criminal: [
+          {
+            text: "(1) إحراق سيارة الجار!",
+            scenario: "السيناريو: شخص أشعل النار عمدًا في سيارة جاره بسبب خلاف قديم.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "تخريب ممتلكات" },
+              { label: "ب", text: "حريق عمد" },
+              { label: "ج", text: "تهديد وابتزاز" }
+            ],
           ans: 1,
           pun: "الأشغال الشاقة المؤقتة (المادة 368 عقوبات)",
         },
         {
-          text: "(7) دهس شخص على ممر المشاة!",
-          opts: ["قتل خطأ", "ترك موقع الحادث", "تسبب بإيذاء عن طريق الإهمال"],
+            text: "(2) دهس شخص على ممر المشاة!",
+            scenario: "السيناريو: سائق دهس شخصًا كان على ممر المشاة، ثم فرّ من المكان.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "قتل خطأ" },
+              { label: "ب", text: "ترك موقع الحادث" },
+              { label: "ج", text: "تسبب بإيذاء عن طريق الإهمال" }
+            ],
           ans: 1,
           pun: "الحبس والغرامة (قانون المرور)",
         },
         {
-          text: "(8) سرقة من داخل سيارة!",
-          opts: ["سرقة موصوفة", "خيانة أمانة", "إتلاف ممتلكات"],
+            text: "(3) سرقة من داخل سيارة!",
+            scenario: "السيناريو: لص فتح سيارة وسرق حقيبة من داخلها.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "سرقة موصوفة" },
+              { label: "ب", text: "خيانة أمانة" },
+              { label: "ج", text: "إتلاف ممتلكات" }
+            ],
           ans: 0,
           pun: "الأشغال الشاقة المؤقتة (المادة 401 عقوبات)",
         },
         {
-          text: "(9) موظف اختلس مال عام!",
-          opts: ["إساءة استعمال السلطة", "اختلاس", "خيانة أمانة"],
+            text: "(4) موظف اختلس مال عام!",
+            scenario: "السيناريو: موظف حكومي أخذ جزءًا من الأموال التي يديرها لحسابه.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "إساءة استعمال السلطة" },
+              { label: "ب", text: "اختلاس" },
+              { label: "ج", text: "خيانة أمانة" }
+            ],
           ans: 1,
           pun: "الأشغال الشاقة المؤقتة (المادة 174 عقوبات)",
         },
         {
-          text: "(10) نشر إشاعة عن فتاة!",
-          opts: ["قذف", "تشهير", "تحقير"],
+            text: "(5) نشر إشاعة عن فتاة!",
+            scenario: "السيناريو: شاب نشر بوست فيه إشاعة سيئة عن سمعة فتاة.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "قذف" },
+              { label: "ب", text: "تشهير" },
+              { label: "ج", text: "تحقير" }
+            ],
           ans: 1,
           pun: "الحبس حتى سنة أو الغرامة (المادة 358 عقوبات)",
-        },
-        {
-          text: "(11) رفض يخرج من الشقة!",
-          opts: ["غصب عقار", "نزاع إيجاري", "استيلاء بدون حق"],
-          ans: 1,
-          pun: "نزاع إيجاري (دعوى إخلاء أمام المحكمة المدنية)",
-        },
-        {
-          text: "(12) باع سيارة بعطل مخفي!",
-          opts: ["غش وتدليس", "بيع باطل", "إساءة نية"],
+          }
+        ],
+        civil: [
+          {
+            text: "(1) اقتحم بيت وسكن فيه!",
+            scenario: "السيناريو: شخص دخل منزل مهجور وسكن فيه بدون إذن صاحبه.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "انتهاك حرمة ملك الغير" },
+              { label: "ب", text: "تسلّل غير مشروع" },
+              { label: "ج", text: "غصب عقار" }
+            ],
+            ans: 2,
+            pun: "الحبس حتى سنتين أو الغرامة أو كلتيهما (المادة 279 عقوبات)",
+          },
+          {
+            text: "(2) سرق جوال من محل!",
+            scenario: "السيناريو: شخص دخل محل تجاري وسرق جوال من فوق الطاولة.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "سرقة بسيطة" },
+              { label: "ب", text: "سرقة موصوفة" },
+              { label: "ج", text: "خيانة أمانة" }
+            ],
           ans: 0,
-          pun: "دعوى فسخ العقد أو التعويض",
+            pun: "الحبس من 3 أشهر إلى 3 سنوات (المادة 404 عقوبات)",
         },
         {
-          text: "(13) أنكر الدين!",
+            text: "(3) امرأة خطفت طفلًا!",
+            scenario: "السيناريو: امرأة أخذت طفلًا من يد أمه وهربت به.",
+            question: "شو التكييف القانوني؟",
           opts: [
-            "لا يمكن المطالبة",
-            "رفع دعوى دين وإثبات بشهادة",
-            "تقديم شكوى للشرطة",
-          ],
-          ans: 1,
-          pun: "عبء الإثبات على المدعي",
-        },
-        {
-          text: "(14) رفع الأجرة فجأة!",
-          opts: ["مخالفة عقد", "تعديل قانوني", "استغلال"],
+              { label: "أ", text: "خطف قاصر" },
+              { label: "ب", text: "اختطاف بهدف التبني" },
+              { label: "ج", text: "حرمان من الحضانة" }
+            ],
           ans: 0,
-          pun: "تطبيق الأجر المتفق عليه لحين انتهاء العقد",
-        },
-        {
-          text: "(15) تعدّى على أرض جاره!",
-          opts: ["اعتداء على الملكية", "مخالفة بناء", "إزعاج الجار"],
+            pun: "الحبس من 5 إلى 15 سنة (المادة 290 عقوبات)",
+          },
+          {
+            text: "(4) ضرب مسنّ بعصا!",
+            scenario: "السيناريو: شاب ضرب رجلًا مسنًّا بعصا وأحدث له كسرًا في يده.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "إيذاء بسيط" },
+              { label: "ب", text: "إيذاء بآلة مؤذية" },
+              { label: "ج", text: "شروع بالقتل" }
+            ],
+            ans: 1,
+            pun: "الحبس من 6 أشهر إلى 3 سنوات (المادة 333 عقوبات)",
+          }
+        ],
+        electronic: [
+          {
+            text: "(1) صوّر شخص بدون إذنه!",
+            scenario: "السيناريو: شخص صوّر فتاة في مكان عام ونشر صورتها.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "تعدّي على الخصوصية" },
+              { label: "ب", text: "حرية تعبير" },
+              { label: "ج", text: "مزاح غير لائق" }
+            ],
           ans: 0,
-          pun: "دعوى إزالة التعدي",
-        },
-        {
-          text: "(16) صوّر شخص بدون إذنه!",
-          opts: ["تعدّي على الخصوصية", "حرية تعبير", "مزاح غير لائق"],
-          ans: 0,
-          pun: "الحبس حتى سنة وغرامة (المادة 4 قانون الجرائم الإلكترونية)",
-        },
-        {
-          text: "(17) فتح حساب وهمي باسم زميله!",
-          opts: ["انتحال شخصية", "قذف", "تعدّي على الحرية الشخصية"],
+            pun: "الحبس حتى سنة وغرامة (المادة 4 من قانون الجرائم الإلكترونية)",
+          },
+          {
+            text: "(2) فتح حساب وهمي باسم زميله!",
+            scenario: "السيناريو: شاب أنشأ حساب مزيف باسم زميله في الجامعة.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "انتحال شخصية" },
+              { label: "ب", text: "قذف" },
+              { label: "ج", text: "تعدّي على الحرية الشخصية" }
+            ],
           ans: 0,
           pun: "الحبس حتى 3 سنوات (المادة 12 جرائم إلكترونية)",
         },
         {
-          text: "(18) اخترق حساب شخصي!",
-          opts: ["عبث إلكتروني", "اختراق بيانات", "دخول غير مشروع"],
+            text: "(3) اخترق حساب شخصي!",
+            scenario: "السيناريو: شخص اخترق حساب واتساب لزميله بدون علمه.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "عبث إلكتروني" },
+              { label: "ب", text: "اختراق بيانات" },
+              { label: "ج", text: "دخول غير مشروع" }
+            ],
           ans: 2,
           pun: "الحبس حتى 6 أشهر أو الغرامة (المادة 3)",
         },
         {
-          text: "(19) نشر محادثة خاصة!",
-          opts: ["نشر مواد خاصة", "إفشاء أسرار", "تعدّي على خصوصية إلكترونية"],
+            text: "(4) نشر محادثة خاصة!",
+            scenario: "السيناريو: شخص نشر صور محادثة خاصة مع صديقته بدون رضاها.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "نشر مواد خاصة" },
+              { label: "ب", text: "إفشاء أسرار" },
+              { label: "ج", text: "تعدّي على خصوصية إلكترونية" }
+            ],
           ans: 2,
           pun: "الحبس أو الغرامة (المادة 4)",
         },
         {
-          text: "(20) نشر رقم شخص على الفيسبوك!",
-          opts: ["قذف", "تحرّش إلكتروني", "انتهاك خصوصية"],
+            text: "(5) نشر رقم شخص على الفيسبوك!",
+            scenario: "السيناريو: شاب نشر رقم فتاة على فيسبوك وقال \"اللي بدو يحكي معها يتفضل\".",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "قذف" },
+              { label: "ب", text: "تحرّش إلكتروني" },
+              { label: "ج", text: "انتهاك خصوصية" }
+            ],
           ans: 2,
           pun: "الحبس حتى سنة وغرامة (المادة 4)",
         },
         {
-          text: "(21) نشر ستوري فيها تنمّر على طالب!",
-          opts: ["سخرية عادية", "تنمّر إلكتروني", "حرية رأي"],
+            text: "(6) نشر ستوري فيها تنمّر على طالب!",
+            scenario: "السيناريو: طالب نشر على ستوري إنستغرام صورة لزميله وكتب تعليق ساخر على شكله.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "سخرية عادية" },
+              { label: "ب", text: "تنمّر إلكتروني" },
+              { label: "ج", text: "حرية رأي" }
+            ],
           ans: 1,
-          pun: "الحبس أو غرامة (المادة 75)",
-        },
-        {
-          text: "(22) تصوير طالبة بدون إذن أثناء المحاضرة!",
-          opts: ["تعدّي على الخصوصية", "محتوى عام", "توثيق عادي"],
+            pun: "الحبس أو الغرامة حسب المادة 75 من قانون الجرائم الإلكترونية",
+          },
+          {
+            text: "(7) تصوير طالبة بدون إذن أثناء المحاضرة!",
+            scenario: "السيناريو: طالب صوّر طالبة داخل القاعة بدون إذنها ونشر الفيديو.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "تعدّي على الخصوصية" },
+              { label: "ب", text: "محتوى عام" },
+              { label: "ج", text: "توثيق عادي" }
+            ],
           ans: 0,
-          pun: "الحبس حتى سنة أو غرامة (المادة 4)",
-        },
-        {
-          text: "(23) نشر نتائج زميله بدون إذنه!",
-          opts: ["مشاركة عفوية", "إفشاء معلومات خاصة", "قذف أكاديمي"],
+            pun: "الحبس حتى سنة أو الغرامة (مادة 4)",
+          },
+          {
+            text: "(8) نشر نتائج زميله بدون إذنه!",
+            scenario: "السيناريو: طالب نشر صورة علامات زميله وسخر منها في جروب الجامعة.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "مشاركة عفوية" },
+              { label: "ب", text: "إفشاء معلومات خاصة" },
+              { label: "ج", text: "قذف أكاديمي" }
+            ],
           ans: 1,
-          pun: "الحبس أو غرامة (المادة 4)",
-        },
-        {
-          text: "(24) نشر إشاعة عن دكتور جامعي!",
-          opts: ["تشهير إلكتروني", "شكوى علنية", "تعبير عن الرأي"],
+            pun: "الحبس أو الغرامة حسب المادة 4",
+          },
+          {
+            text: "(9) نشر إشاعة عن دكتور جامعي!",
+            scenario: "السيناريو: طالب كتب بوست يتهم دكتورًا في الجامعة بالتحرش دون دليل.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "تشهير إلكتروني" },
+              { label: "ب", text: "شكوى علنية" },
+              { label: "ج", text: "تعبير عن الرأي" }
+            ],
           ans: 0,
-          pun: "الحبس أو غرامة (المادة 11)",
-        },
-        {
-          text: "(25) الدخول إلى حساب زميل بدون إذنه!",
-          opts: ["مزاح بين صديقات", "دخول غير مشروع", "فضول شخصي"],
+            pun: "الحبس أو الغرامة (المادة 11 من قانون الجرائم الإلكترونية)",
+          },
+          {
+            text: "(10) الدخول إلى حساب زميل بدون إذنه!",
+            scenario: "السيناريو: طالبة فتحت حساب صديقتها من اللابتوب بعد أن نسيته مفتوح.",
+            question: "شو التكييف القانوني؟",
+            opts: [
+              { label: "أ", text: "مزاح بين صديقات" },
+              { label: "ب", text: "دخول غير مشروع" },
+              { label: "ج", text: "فضول شخصي" }
+            ],
           ans: 1,
-          pun: "الحبس حتى 6 أشهر أو غرامة (المادة 3)",
-        },
-        {
-          text: "(26) تسجيل المحاضرة ونشرها بدون إذن الدكتور!",
-          opts: ["تسريب أكاديمي", "انتهاك حقوق نشر", "خرق خصوصية أكاديمية"],
-          ans: 1,
-          pun: "غرامات مالية وتعويضات مدنية (قانون الملكية الفكرية)",
-        },
-        {
-          text: "(27) تهديد زميل برسائل على إنستغرام!",
-          opts: ["مزاح", "تهديد إلكتروني", "تحذير شخصي"],
-          ans: 1,
-          pun: "الحبس حتى سنة (المادة 75)",
-        },
-        {
-          text: "(28) مشاركة رابط موقع احتيالي في جروب الكلية!",
-          opts: ["تضليل إلكتروني", "نشر برمجيات خبيثة", "احتيال إلكتروني"],
-          ans: 2,
-          pun: "الحبس من 3 أشهر إلى 3 سنوات (المادة 13)",
-        },
-        {
-          text: "(29) التلاعب بدرجات الامتحان على النظام الإلكتروني!",
-          opts: ["غش أكاديمي", "اختراق نظام معلومات", "تزوير إلكتروني"],
-          ans: 1,
-          pun: "الحبس من 6 أشهر إلى 3 سنوات (المادة 6)",
-        },
-        {
-          text: "(30) مشاركة صورة من دردشة خاصة في جروب بدون رضا الطرف الثاني!",
-          opts: ["فضح اتفاق", "تعدّي على الخصوصية", "مشاركة محتوى"],
-          ans: 1,
-          pun: "الحبس أو غرامة (المادة 4)",
-        },
-        {
-          text: "(31) مديرك طلب منك توقّع على استقالة بدون تاريخ وقال \"بس احتياط!\"، شو الموقف الصح؟",
-          opts: ["توقّع بدون تردد", "ترفض لأنه أمر غير قانوني", "المطالبة  بتعبئة التاريخ لضمان حقك"],
-          ans: 1,
-          pun: "يُعتبر ضغطًا غير مشروع وقد يُبطل الاستقالة أمام القضاء",
-        },
-        {
-          text: "(32) سجلتي مكالمة صاحبتك ونشرتيها بمجموعة بدون إذنها، تصرّفك قانوني؟",
-          opts: ["أيوه، فضفضة بين البنات", "لا، انتهاك للخصوصية", "يعتمد إذا كان فيها شي مهم"],
-          ans: 1,
-          pun: "جريمة إلكترونية – عقوبات قد تصل للحبس والغرامة",
-        },
-        {
-          text: "(33) فتحت رابط تدريب من واتساب وانسرق حسابك، شو اسم الجريمة؟",
-          opts: ["نسيان كلمة السر", "اختراق حساب", "جريمة إلكترونية باحتيال"],
-          ans: 2,
-          pun: "يُعاقب الفاعل بموجب قانون الجرائم الإلكترونية",
-        },
-        {
-          text: "(34) اشتغلت أسبوعين بمطعم وما دفعولك. إلك حق؟",
-          opts: ["لأ، ما في عقد", "أيوه، لازم يدفعوا", "يعتمد على صاحب الشغل"],
-          ans: 1,
-          pun: "يحق لك التقديم بشكوى لقسم العمل",
-        },
-        {
-          text: "(35) طلعت من الدوام 12:30 بس الكاميرا بتقول 2:00 ووقّعت عليها، شو الموقف؟",
-          opts: ["غلطة بسيطة", "تزوير سجلات", "نظام مرن بالدوام"],
-          ans: 1,
-          pun: "تُعتبر تزويرًا وقد تؤدي لمساءلة تأديبية أو قانونية",
-        },
-        {
-          text: "(36) صورت نقاش عائلي بدون ما حد يشوفك، لو شافك القانون؟",
-          opts: ["ما في مشكله", "خصوصية العائلة مش مهمة", "انتهاك للخصوصية"],
-          ans: 2,
-          pun: "مخالفة قانونية حسب قانون الخصوصية",
-        },
-        {
-          text: "(37) منشور فيه \"كل البنات كذابين\" – شو يُعتبر؟",
-          opts: ["رأي شخصي", "حرية تعبير", "خطاب كراهية"],
-          ans: 2,
-          pun: "يُحاسب عليه القانون وقد يُعد جريمة إلكترونية",
-        },
-        {
-          text: "(38) أم عزباء ما وصلها نفقة من سنتين، فيه حق قانوني؟",
-          opts: ["لا، خلاص تأخرت", "نعم، ترفع دعوى", "لازم الأب يرضى"],
-          ans: 1,
-          pun: "يجوز إلزام الأب بالدفع بأمر من المحكمة الشرعية",
-        },
-        {
-          text: "(39) استضفت قطة شارع، عضّت طفل الجيران، من المسؤول؟",
-          opts: ["أهل الطفل", "الدولة", "أنت كصاحب القطة"],
-          ans: 2,
-          pun: "مسؤولية مدنية وتعويض للأضرار",
-        },
-        {
-          text: "(40) صاحبك فتح مشروع باسمك بس \"على الورق\"، فيه مسؤولية؟",
-          opts: ["لا، الاسم بس شكلي", "نعم، ممكن تتحاسب", "يعتمد على نوع المشروع"],
-          ans: 1,
-          pun: "مسؤولية قانونية في حال حدوث مخالفات أو جرائم",
-        },
-        {
-          text: "(41) منشور فيه معلومات كاذبة عنك، هل هو رأي ولا تشهير؟",
-          opts: ["رأي", "غيبة", "تشهير"],
-          ans: 2,
-          pun: "جريمة تشهير يُعاقب عليها القانون",
-        },
-        {
-          text: "(42) نقلت شيكلين من صندوق الشركة لمحفظتك \"مؤقتًا\"، شو تعتبر؟",
-          opts: ["استعارة", "تصرف إداري", "إساءة أمانة"],
-          ans: 2,
-          pun: "جريمة سرقة أو إساءة أمانة – حبس أو غرامة",
-        },
-        {
-          text: "(43) أب ما سجّل ابنه بالمدرسة، هل يملك الحرية؟",
-          opts: ["نعم، حرية تربوية", "لا، يُخالف القانون", "يعتمد على الحالة المادية"],
-          ans: 1,
-          pun: "مساءلة قانونية لانتهاك التعليم الإلزامي",
-        },
-        {
-          text: "(44) بنتك اشترت من لعبة موبايل بالغلط، شو الموقف؟",
-          opts: ["عادي، لعب أطفال", "الأهل مسؤولون", "الشركة هي الغلطانة"],
-          ans: 1,
-          pun: "الأهل يتحملون المسؤولية ويحق لهم طلب استرداد المبلغ",
-        },
-        {
-          text: "(45) موظف بلدية سرّع معاملة لصاحبه، واسطة ولا فساد؟",
-          opts: ["خدمة شخصية", "فساد إداري", "أمر عادي"],
-          ans: 1,
-          pun: "مخالفة قانونية – يُحاسب عليها الموظف",
-        },
-        {
-          text: "(46) شاب اقترح على صاحبه يسرقوا شركة، حتى لو نكتة؟",
-          opts: ["عادي، مزحة", "محاولة جريمة", "حرية تعبير"],
-          ans: 1,
-          pun: "يُعتبر شروعًا ويُعاقب حسب القانون",
-        },
-        {
-          text: "(47) نزلت صورة بنت بدون إذنها وكتبت إنها \"صديقتك\"، فيها مشكلة؟",
-          opts: ["لا، ما فيها شي", "ممكن تكون تشهير", "حرية شخصية"],
-          ans: 1,
-          pun: "انتهاك خصوصية أو تشهير – عقوبات قانونية",
-        },
-        {
-          text: "(48) أخذت كفالة من زميل وهددت تنشرها، شو هذا؟",
-          opts: ["ضمان", "نصيحة", "ابتزاز"],
-          ans: 2,
-          pun: "جريمة ابتزاز – يُعاقب عليها بالحبس",
-        },
-        {
-          text: "(49) صورت سيارة ماشية عكس السير ونزلت فيديو، ممكن تتعاقب؟",
-          opts: ["لا، نشر توعية", "نعم، لو ظهرت وجوه", "تصوير عادي"],
-          ans: 1,
-          pun: "انتهاك خصوصية الأفراد في حال ظهرت وجوههم",
-        },
-        {
-          text: "(50) سائق صور شاب وبنت بالشارع ونشر صورتهم بتعليق ساخر، موقفه؟",
-          opts: ["حرية رأي", "توعية اجتماعية", "تعدٍ على الخصوصية"],
-          ans: 2,
-          pun: "يُعتبر انتهاكًا للخصوصية ويُعاقب عليه القانون",
-        },
-      ];
+            pun: "الحبس حتى 6 أشهر أو الغرامة (مادة 3)",
+          }
+        ]
+      };
 
       // Initialize game state
       let score = 0;
       let answeredQuestions = new Set();
       let incorrectAnswers = new Set();
       let currentQuestionIndex = 0;
+      let currentSection = 'criminal';
 
       // Get DOM elements
-      const cardsEl = document.getElementById("cards");
+      const cardsCriminalEl = document.getElementById("cards-criminal");
+      const cardsCivilEl = document.getElementById("cards-civil");
+      const cardsElectronicEl = document.getElementById("cards-electronic");
       const quizEl = document.getElementById("quiz");
       const qText = document.getElementById("q-text");
       const optsEl = document.getElementById("options");
@@ -689,51 +747,97 @@
       const totalQuestionsEl = document.getElementById("total-questions");
 
       // Initialize total questions count
-      totalQuestionsEl.textContent = data.length;
+      const totalQuestions = data.criminal.length + data.civil.length + data.electronic.length;
+      totalQuestionsEl.textContent = totalQuestions;
       correctAnswersEl.textContent = score;
 
-      // Create question cards
+      // Create question cards for each section
       function updateCards() {
-        cardsEl.innerHTML = '';
-        data.forEach((_, i) => {
+        // Criminal section
+        cardsCriminalEl.innerHTML = '';
+        data.criminal.forEach((_, i) => {
           const d = document.createElement("div");
           d.className = "card";
           d.textContent = i + 1;
           
-          if (incorrectAnswers.has(i)) {
+          if (incorrectAnswers.has(`criminal-${i}`)) {
             d.style.backgroundColor = "#fef2f2";
             d.style.borderColor = "var(--error-color)";
-          } else if (answeredQuestions.has(i)) {
+          } else if (answeredQuestions.has(`criminal-${i}`)) {
             d.style.backgroundColor = "#f0fdf4";
             d.style.borderColor = "var(--success-color)";
           }
           
-          d.onclick = () => showQuiz(i);
-          cardsEl.appendChild(d);
+          d.onclick = () => showQuiz('criminal', i);
+          cardsCriminalEl.appendChild(d);
+        });
+
+        // Civil section
+        cardsCivilEl.innerHTML = '';
+        data.civil.forEach((_, i) => {
+          const d = document.createElement("div");
+          d.className = "card";
+          d.textContent = i + 1;
+          
+          if (incorrectAnswers.has(`civil-${i}`)) {
+            d.style.backgroundColor = "#fef2f2";
+            d.style.borderColor = "var(--error-color)";
+          } else if (answeredQuestions.has(`civil-${i}`)) {
+            d.style.backgroundColor = "#f0fdf4";
+            d.style.borderColor = "var(--success-color)";
+          }
+          
+          d.onclick = () => showQuiz('civil', i);
+          cardsCivilEl.appendChild(d);
+        });
+
+        // Electronic section
+        cardsElectronicEl.innerHTML = '';
+        data.electronic.forEach((_, i) => {
+          const d = document.createElement("div");
+          d.className = "card";
+          d.textContent = i + 1;
+          
+          if (incorrectAnswers.has(`electronic-${i}`)) {
+            d.style.backgroundColor = "#fef2f2";
+            d.style.borderColor = "var(--error-color)";
+          } else if (answeredQuestions.has(`electronic-${i}`)) {
+            d.style.backgroundColor = "#f0fdf4";
+            d.style.borderColor = "var(--success-color)";
+          }
+          
+          d.onclick = () => showQuiz('electronic', i);
+          cardsElectronicEl.appendChild(d);
         });
       }
 
       // Initial cards creation
       updateCards();
 
-      function showQuiz(i) {
+      function showQuiz(section, i) {
+        currentSection = section;
         currentQuestionIndex = i;
-        cardsEl.style.display = "none";
-        quizEl.style.display = "block";
-        qText.textContent = data[i].text;
+        
+        const question = data[section][i];
+        qText.innerHTML = `
+          <div class="scenario">${question.scenario}</div>
+          <div class="question">${question.question}</div>
+        `;
+        
         optsEl.innerHTML = "";
         punEl.textContent = "";
         
-        updateNavigationButtons();
+        // Update navigation buttons state
+        updateQuestionNavigation();
         
-        data[i].opts.forEach((opt, j) => {
+        question.opts.forEach((opt, j) => {
           const b = document.createElement("div");
           b.className = "option";
-          b.textContent = opt;
+          b.innerHTML = `<span class="option-label">${opt.label}</span>${opt.text}`;
           
           // Add hover effect for options
           b.onmouseover = () => {
-            if (!answeredQuestions.has(i)) {
+            if (!answeredQuestions.has(`${section}-${i}`)) {
               b.style.transform = "translateX(-5px)";
             }
           };
@@ -742,49 +846,61 @@
           };
           
           b.onclick = () => {
-            if (!answeredQuestions.has(i)) {
-              check(i, j, b);
+            if (!answeredQuestions.has(`${section}-${i}`)) {
+              check(section, i, j, b);
             }
           };
           optsEl.appendChild(b);
         });
 
         // If question was already answered, show previous result
-        if (answeredQuestions.has(i)) {
+        if (answeredQuestions.has(`${section}-${i}`)) {
           const options = [...optsEl.children];
           options.forEach((opt, j) => {
-            if (j === data[i].ans) {
+            if (j === question.ans) {
               opt.classList.add("correct");
-            } else if (incorrectAnswers.has(i)) {
+            } else if (incorrectAnswers.has(`${section}-${i}`)) {
               opt.classList.add("wrong");
             }
           });
-          punEl.textContent = "العقوبة: " + data[i].pun;
+          punEl.textContent = "العقوبة: " + question.pun;
         }
+
+        // Show question page
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('question-page').style.display = 'block';
       }
 
-      function updateNavigationButtons() {
+      function updateQuestionNavigation() {
+        const prevBtn = document.getElementById('prev-question');
+        const nextBtn = document.getElementById('next-question');
+        const currentSectionData = data[currentSection];
+        
         prevBtn.disabled = currentQuestionIndex === 0;
-        nextBtn.disabled = currentQuestionIndex === data.length - 1;
+        nextBtn.disabled = currentQuestionIndex === currentSectionData.length - 1;
       }
 
-      function navigateToQuestion(direction) {
+      function navigateQuestion(direction) {
+        const currentSectionData = data[currentSection];
         const newIndex = currentQuestionIndex + direction;
-        if (newIndex >= 0 && newIndex < data.length) {
-          showQuiz(newIndex);
+        
+        if (newIndex >= 0 && newIndex < currentSectionData.length) {
+          showQuiz(currentSection, newIndex);
         }
       }
 
-      // Add navigation button event listeners
-      prevBtn.onclick = () => navigateToQuestion(-1);
-      nextBtn.onclick = () => navigateToQuestion(1);
+      function returnToMain() {
+        document.getElementById('question-page').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+      }
 
-      function check(i, j, el) {
-        answeredQuestions.add(i);
+      function check(section, i, j, el) {
+        const questionId = `${section}-${i}`;
+        answeredQuestions.add(questionId);
         
         [...optsEl.children].forEach((x) => (x.onclick = null));
         
-        if (j === data[i].ans) {
+        if (j === data[section][i].ans) {
           el.classList.add("correct");
           score++;
           correctAnswersEl.textContent = score;
@@ -793,13 +909,13 @@
           el.style.animation = "correctAnswer 0.5s ease";
         } else {
           el.classList.add("wrong");
-          incorrectAnswers.add(i);
-          optsEl.children[data[i].ans].classList.add("correct");
+          incorrectAnswers.add(questionId);
+          optsEl.children[data[section][i].ans].classList.add("correct");
         }
 
         // Show punishment with fade-in effect
         punEl.style.opacity = "0";
-        punEl.textContent = "العقوبة: " + data[i].pun;
+        punEl.textContent = "العقوبة: " + data[section][i].pun;
         setTimeout(() => {
           punEl.style.transition = "opacity 0.5s ease";
           punEl.style.opacity = "1";
@@ -809,20 +925,15 @@
         updateCards();
       }
 
-      backBtn.onclick = () => {
-        quizEl.style.display = "none";
-        cardsEl.style.display = "grid";
-      };
-
-      // Add keypress support for navigation
+      // Update keypress support for navigation
       document.addEventListener("keydown", (e) => {
-        if (quizEl.style.display === "block") {
+        if (document.getElementById('question-page').style.display === "block") {
           if (e.key === "Escape") {
-            backBtn.click();
+            returnToMain();
           } else if (e.key === "ArrowRight") {
-            prevBtn.click();
+            navigateQuestion(1);
           } else if (e.key === "ArrowLeft") {
-            nextBtn.click();
+            navigateQuestion(-1);
           }
         }
       });
