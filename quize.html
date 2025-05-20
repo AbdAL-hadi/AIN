@@ -1253,7 +1253,24 @@
       totalQuestionsEl.textContent = totalQuestions;
       correctAnswersEl.textContent = score;
 
-      // Create question cards for each section
+      // Add this function before updateCards and showQuiz
+      function shuffleQuizOptions() {
+        ['criminal', 'civil', 'electronic'].forEach(section => {
+          data[section].forEach(q => {
+            const optionObjs = q.opts.map((opt, i) => ({ ...opt, origIndex: i }));
+            for (let i = optionObjs.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [optionObjs[i], optionObjs[j]] = [optionObjs[j], optionObjs[i]];
+            }
+            q.opts = optionObjs.map(o => ({ label: o.label, text: o.text }));
+            q.ans = optionObjs.findIndex(o => o.origIndex === q.ans);
+          });
+        });
+      }
+
+      // Call shuffleQuizOptions before updateCards() in initial setup and in showShortQuestions
+      shuffleQuizOptions();
+
       function updateCards() {
         // Criminal section
         cardsCriminalEl.innerHTML = '';
@@ -1335,7 +1352,7 @@
         question.opts.forEach((opt, j) => {
           const b = document.createElement("div");
           b.className = "option";
-          b.innerHTML = `<span class="option-label">${opt.label}</span>${opt.text}`;
+          b.textContent = opt.text;
           
           // Add hover effect for options
           b.onmouseover = () => {
@@ -1447,6 +1464,7 @@
 
       function showShortQuestions() {
         document.querySelector('.main-options').style.display = 'none';
+        shuffleQuizOptions();
         document.getElementById('quiz-section').style.display = 'block';
         updateCards(); // Make sure to update the cards when showing the quiz section
       }
@@ -1554,6 +1572,14 @@
         quizContainer.innerHTML = '';
 
         emojiQuestions.forEach((q, index) => {
+          // Shuffle options and update answer index
+          const optionObjs = q.options.map((text, i) => ({ text, origIndex: i }));
+          for (let i = optionObjs.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [optionObjs[i], optionObjs[j]] = [optionObjs[j], optionObjs[i]];
+          }
+          const newAnswerIndex = optionObjs.findIndex(opt => opt.origIndex === q.answer);
+
           const questionDiv = document.createElement('div');
           questionDiv.className = 'emoji-question';
 
@@ -1574,10 +1600,10 @@
           const resultDiv = document.createElement('div');
           resultDiv.className = 'emoji-result';
 
-          q.options.forEach((option, i) => {
+          optionObjs.forEach((optionObj, i) => {
             const button = document.createElement('button');
             button.className = 'emoji-option';
-            button.textContent = option;
+            button.textContent = optionObj.text;
             button.onclick = () => {
               const options = optionsDiv.querySelectorAll('button');
               options.forEach(opt => {
@@ -1585,12 +1611,12 @@
                 opt.classList.remove('correct', 'incorrect');
               });
 
-              if (i === q.answer) {
+              if (i === newAnswerIndex) {
                 button.classList.add('correct');
                 resultDiv.innerHTML = '✅ إجابة صحيحة!';
               } else {
                 button.classList.add('incorrect');
-                resultDiv.innerHTML = `❌ إجابة خاطئة<br>✅ الجواب الصحيح: ${String.fromCharCode(97 + q.answer)}. ${q.explanation}`;
+                resultDiv.innerHTML = `❌ إجابة خاطئة<br>✅ الجواب الصحيح: ${String.fromCharCode(97 + newAnswerIndex)}. ${q.explanation}`;
               }
             };
             optionsDiv.appendChild(button);
